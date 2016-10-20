@@ -7,4 +7,4 @@ const config= {
 
 };
 
-export default ()=> getRoutes(new HistoryAPI(config));
+export default () => getRoutes(new HistoryAPI(config));

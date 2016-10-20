@@ -8,7 +8,7 @@ export default class _DefaultLayout extends React.Component {
 		return (
 			<html>
 				<head>
-					<title>{this.props.title || "SlipKnot"}</title>
+					<title>{this.props.title || "Hacker News"}</title>
 				</head>
 				<body>
 

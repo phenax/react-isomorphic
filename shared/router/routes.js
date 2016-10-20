@@ -16,6 +16,8 @@ export default (history)=> (
 		<Route path='/wow' component={null} />
 		<Route path={/^\/awesome$/} component={Hello} />
 
+		<div className='awesome' />
+
 		<Route errorHandler={true} component={ErrorPage} />
 	</HnRouter>
 );

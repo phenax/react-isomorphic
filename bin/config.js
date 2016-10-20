@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 module.exports= (express, app)=> {
 
 	// View Engine
-	app.set('views', path.join(__dirname, '../layouts'));
+	app.set('views', path.join(__dirname, '../shared'));
 	app.engine('js', require('express-react-views').createEngine());
 	app.set('view engine', 'js');
 
