@@ -26,22 +26,44 @@ export class HnRouter extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.state= {
+			currentUrl: '/'
+		};
+
 		this._routes= 
 			this.props.children
 				.filter( comp => !(comp instanceof Route) )
 				.map( val => val.props );
+
+		if(!(this.props.history instanceof _HnRouteHistoryAPI))
+			throw new Error(HISTORYTYPEERROR);
+	}
+
+	componentDidMount() {
+
+		this.props.history
+			.routeChangeListener((data)=> {
+
+			this.setState({
+				currentUrl: data.url
+			});
+		});
+	}
+
+	componentWillUnmount() {
+		this.props.history.removeChangeListener();
 	}
 
 	render() {
 
-		if(!(this.props.history instanceof _HnRouteHistoryAPI))
-			throw new Error(HISTORYTYPEERROR);
-
-		const $component= this.props.history.matchRoute(this._routes);
+		const {url, $component}= this.props.history.matchRoute(this._routes);
 
 		if($component === null)
 			throw new Error(NULLCOMPONENTERROR);
 
-		return $component;
+		return React.cloneElement(
+			$component, 
+			{ url: this.state.currentUrl }
+		);
 	}
 }

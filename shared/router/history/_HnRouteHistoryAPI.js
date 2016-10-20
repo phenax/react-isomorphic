@@ -1,11 +1,11 @@
 
 import React from 'react';
+import {Promise} from 'es6-promise';
 
 /**
  * Super class for all the history api classes
  */
 export default class _HnRouteHistoryAPI {
-
 
 	_isAMatch(url1, currentUrl) {
 
@@ -23,6 +23,7 @@ export default class _HnRouteHistoryAPI {
 
 	_matchRoute(routes, currentUrl) {
 
+		let $renderComponent= null;
 		let $errorHandler= null;
 		let $component= null;
 
@@ -40,19 +41,22 @@ export default class _HnRouteHistoryAPI {
 				continue;
 			}
 
-
 			// If the path prop is not set
 			if(!('path' in routes[i]))
 				continue;
 
 			// Check if route matches, return the component
-			if(this._isAMatch(routes[i].path, currentUrl))
-				return $component;
+			if(this._isAMatch(routes[i].path, currentUrl)) {
+				$renderComponent= $component;
+				break;
+			}
 		}
 
-		return $errorHandler;
+		return {
+			url: currentUrl,
+			$component: $renderComponent || $errorHandler
+		};
 	}
-
 
 	_getComponentFromClass(Component, props) {
 
