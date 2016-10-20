@@ -1,15 +1,6 @@
 
-import React from 'react';
+import { NodeHistoryAPI } from './HnRouter';
 
-import {
-	HnRouter,
-	NodeHistoryAPI,
-} from './HnRouter';
+import getRoutes from './routes';
 
-import routes from './routes';
-
-export default (req)=> (
-	<HnRouter history={new NodeHistoryAPI(req)}>
-		{routes}
-	</HnRouter>
-);
+export default (req)=> getRoutes(new NodeHistoryAPI(req));

@@ -18,7 +18,7 @@ export class HnRouter extends React.Component {
 
 		const component= this.props.history.matchRoute(routes);
 
-		return (component !== null)? component: <div className='error'>Error 404</div>;
+		return (component !== null)? component: <div className='error'>{`The component cannot be null`}</div>;
 	}
 }
 
@@ -32,6 +32,7 @@ export class NodeHistoryAPI {
 	matchRoute(routes) {
 
 		let ErrorHandler= null;
+		let isAMatch= false;
 
 		for(let i= 0; i< routes.length; i++) {
 
@@ -46,8 +47,16 @@ export class NodeHistoryAPI {
 				continue;
 			}
 
-			if(routes[i].path === this._req.url) {
-				
+			// If the path entered is a regex, evaluate
+			// Else, (its a string), check if it matches
+			if(typeof(routes[i].path.test) === "function") {
+				isAMatch= routes[i].path.test(this._req.url);
+			} else {
+				isAMatch= (routes[i].path === this._req.url);
+			}
+
+			if(isAMatch) {
+		
 				const Component= routes[i].component || null;
 				const props= routes[i].props || {};
 
