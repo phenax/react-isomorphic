@@ -3,7 +3,6 @@ const path = require('path');
 
 const BUILD_DIR= path.resolve(__dirname, 'public/js');         // Build directory
 const APP_DIR= __dirname;                                      // Source directory
-const SERVED_DIR= path.resolve(__dirname, 'static/js');        // Slipknot frontend
 
 process.env.NODE_ENV= process.env.NODE_ENV || 'development';
 
@@ -16,8 +15,6 @@ const webpackConfig = {
 	entry: {
 
 		script: APP_DIR + '/client.js',
-
-		slipknot: SERVED_DIR + '/slipknot.js'
 	},
 	
 	output: {

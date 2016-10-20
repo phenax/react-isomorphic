@@ -33,6 +33,13 @@ export class HistoryAPI extends _HnRouteHistoryAPI {
 
 		this._config= config;
 	}
+
+	matchRoute(routes) {
+
+		const currentUrl= window.location.pathname;
+
+		return this._matchRoute(routes, currentUrl);
+	}
 }
 
 /**

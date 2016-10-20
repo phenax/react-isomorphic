@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-import routeConfig from './router/routeConfig.server';
+import getRoutes from './router/getRoutes.server';
 
 import DefaultLayout from './_DefaultLayout';
 
@@ -12,7 +12,9 @@ export default class IndexLayout extends React.Component  {
 
 		return (
 			<DefaultLayout>
-				{routeConfig(this.props.req)}
+				<div id='userId'>
+					{getRoutes(this.props.req)}
+				</div>
 			</DefaultLayout>
 		);
 	}
