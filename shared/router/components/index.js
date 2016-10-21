@@ -9,15 +9,23 @@ import { triggerUpdate, routerConfig } from '../history/events';
  */
 export class Link extends React.Component {
 
-	_visitLink(e) {
+	_shouldTriggerUpdate() {
 
 		// IF the href is set, dont do shit
 		if(this.props.href)
-			return;
+			return false;
 
 		// IF to is not set, dont do shit
 		if(!this.props.to)
-			return;
+			return false;
+
+		return true;
+	}
+
+	_visitLink(e) {
+
+		if(!this._shouldTriggerUpdate())
+			return;	
 
 		e.preventDefault();
 

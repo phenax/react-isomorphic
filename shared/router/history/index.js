@@ -53,6 +53,19 @@ export class HistoryAPI extends _HnRouteHistoryAPI {
 		events.routerConfig.type= 'push';
 	}
 
+	get location() {
+		return {
+			push(url='/', state={}, title='') {
+				window.history.pushState(state, title, url);
+				events.triggerUpdate();
+			},
+			replace(url='/', state={}, title='') {
+				window.history.replaceState(state, title, url);
+				events.triggerUpdate();
+			}
+		}
+	}
+
 	matchRoute(routes) {
 
 		this._currentUrl= window.location.pathname;

@@ -4821,7 +4821,10 @@ var HnRouter = function (_React$Component2) {
 			throw new Error(NULLCOMPONENTERROR);
 		}
 
-		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.cloneElement($component, { url: this.state.currentUrl });
+		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.cloneElement($component, {
+			url: this.state.currentUrl,
+			location: this.props.history.location
+		});
 	};
 
 	return HnRouter;
@@ -7293,8 +7296,6 @@ function addRouteChangeListener(id, callback) {
  * Remove an update handler
  */
 function removeRouteChangeListener(id) {
-
-	handlers[id] = null;
 
 	delete handlers[id];
 }
@@ -11327,6 +11328,11 @@ var HomePage = function (_React$Component) {
 	}
 
 	HomePage.prototype.btnClickHandler = function btnClickHandler() {
+
+		if (this.state.number == 5) {
+			this.props.location.replace('/wow');
+		}
+
 		this.setState({
 			number: this.state.number + 1
 		});
@@ -11347,6 +11353,12 @@ var HomePage = function (_React$Component) {
 				this.state.number || 0,
 				' clicks'
 			),
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				'div',
+				null,
+				'The 6th click will take you to wow'
+			),
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				'ul',
@@ -11505,13 +11517,20 @@ var Link = function (_React$Component) {
 		return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
 	}
 
-	Link.prototype._visitLink = function _visitLink(e) {
+	Link.prototype._shouldTriggerUpdate = function _shouldTriggerUpdate() {
 
 		// IF the href is set, dont do shit
-		if (this.props.href) return;
+		if (this.props.href) return false;
 
 		// IF to is not set, dont do shit
-		if (!this.props.to) return;
+		if (!this.props.to) return false;
+
+		return true;
+	};
+
+	Link.prototype._visitLink = function _visitLink(e) {
+
+		if (!this._shouldTriggerUpdate()) return;
 
 		e.preventDefault();
 
@@ -11570,6 +11589,8 @@ Link.propTypes = {
 /* unused harmony export NodeHistoryAPI */
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return HistoryAPI; });
 /* unused harmony export HashHistoryAPI */
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -11657,6 +11678,30 @@ var HistoryAPI = function (_HnRouteHistoryAPI3) {
 		__WEBPACK_IMPORTED_MODULE_1__history_events__["d" /* removeRouteChangeListener */](this._randomId);
 		window.removeEventListener('popstate', __WEBPACK_IMPORTED_MODULE_1__history_events__["b" /* triggerUpdate */]);
 	};
+
+	_createClass(HistoryAPI, [{
+		key: 'location',
+		get: function get() {
+			return {
+				push: function push() {
+					var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '/';
+					var state = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+					var title = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+
+					window.history.pushState(state, title, url);
+					__WEBPACK_IMPORTED_MODULE_1__history_events__["b" /* triggerUpdate */]();
+				},
+				replace: function replace() {
+					var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '/';
+					var state = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+					var title = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+
+					window.history.replaceState(state, title, url);
+					__WEBPACK_IMPORTED_MODULE_1__history_events__["b" /* triggerUpdate */]();
+				}
+			};
+		}
+	}]);
 
 	return HistoryAPI;
 }(__WEBPACK_IMPORTED_MODULE_0__HnRouteHistoryAPI__["a" /* default */]);

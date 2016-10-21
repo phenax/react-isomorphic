@@ -42,7 +42,5 @@ export function addRouteChangeListener(id, callback) {
  */
 export function removeRouteChangeListener(id) {
 	
-	handlers[id]= null;
-	
 	delete handlers[id];
 }

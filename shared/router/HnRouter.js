@@ -71,7 +71,10 @@ export class HnRouter extends React.Component {
 
 		return React.cloneElement(
 			$component, 
-			{ url: this.state.currentUrl }
+			{
+				url: this.state.currentUrl,
+				location: this.props.history.location
+			}
 		);
 	}
 }

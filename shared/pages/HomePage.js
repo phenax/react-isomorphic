@@ -15,6 +15,11 @@ export default class HomePage extends React.Component {
 	}
 
 	btnClickHandler() {
+
+		if(this.state.number == 5) {
+			this.props.location.replace('/wow');
+		}
+
 		this.setState({
 			number: this.state.number + 1
 		});
@@ -25,6 +30,8 @@ export default class HomePage extends React.Component {
 			<div>
 				<h1>My Awesomeness Page</h1>
 				<button onClick={this.btnClickHandler}>{this.state.number || 0} clicks</button>
+				<div>The 6th click will take you to wow</div>
+				<br />
 				<br />
 				<ul>
 					<li><Link to='/wow'>Click for wow</Link></li>
