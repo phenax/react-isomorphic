@@ -1,6 +1,7 @@
 import _HnRouteHistoryAPI from './_HnRouteHistoryAPI';
 
 import {
+	routerConfig,
 	triggerUpdate,
 	addRouteChangeListener,
 	removeRouteChangeListener
@@ -18,6 +19,8 @@ export class NodeHistoryAPI extends _HnRouteHistoryAPI {
 		super();
 
 		this._req= req;
+
+		routerConfig.type= 'node';
 	}
 
 	matchRoute(routes) {
@@ -37,11 +40,11 @@ export class HistoryAPI extends _HnRouteHistoryAPI {
 	constructor(config) {
 		super();
 
-		this._config= config;
-
-		window.onpopstate= triggerUpdate;
-
 		this._randomId= Math.floor(Math.random()*1000000).toString(16);
+
+		window.addEventListener('popstate', triggerUpdate);
+
+		routerConfig.type= 'push';
 	}
 
 	matchRoute(routes) {
@@ -64,6 +67,7 @@ export class HistoryAPI extends _HnRouteHistoryAPI {
 
 	removeChangeListener() {
 		removeRouteChangeListener(this._randomId);
+		window.removeEventListener('popstate', triggerUpdate);
 	}
 }
 
@@ -80,27 +84,34 @@ export class HashHistoryAPI extends _HnRouteHistoryAPI {
 		super();
 
 		this._config= config;
+
+		routerConfig.type= 'hash';
 	}
 
 	_parseHash(hash) {
-		return hash.remove('#');
+		return hash.replace('#', '');
 	}
 
 	matchRoute(routes) {
 
+		if(window.location.hash == '')
+			window.location.hash= '#/';
+
 		this._currentUrl= this._parseHash(window.location.hash);
 
-		console.log(this._currentUrl);
+		if(this._currentUrl == '')
+			this._currentUrl= '/';
 
 		return this._matchRoute(routes, this._currentUrl);
 	}
 
 	routeChangeListener() {
 
-		window.onhashchange= (e)=> triggerUpdate();
+		window.addEventListener('hashchange', triggerUpdate);
 	}
 
 	removeChangeListener() {
-		// Nothing because its not a .addEventListener
+
+		window.removeEventListener('hashchange', triggerUpdate);
 	}
 }

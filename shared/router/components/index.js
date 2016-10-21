@@ -11,13 +11,21 @@ export class Link extends React.Component {
 
 	_visitLink(e) {
 
+		// IF the href is set, dont do shit
 		if(this.props.href)
 			return;
 
-		if(routerConfig.type == 'hash')
+		// IF to is not set, dont do shit
+		if(!this.props.to)
 			return;
 
 		e.preventDefault();
+
+		// If its hash based url, change hash
+		if(routerConfig.type === 'hash') {
+			window.location.hash= `#${this.props.to}`;
+			return;
+		}
 
 		const defaultState= {
 			path: this.props.to
