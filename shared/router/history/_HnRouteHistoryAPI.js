@@ -1,21 +1,26 @@
 
 import React from 'react';
-import {Promise} from 'es6-promise';
 
 /**
  * Super class for all the history api classes
  */
 export default class _HnRouteHistoryAPI {
 
-	_isAMatch(url1, currentUrl) {
+	_isAMatch(url1, currentUrl, isCaseInsensitive) {
 
 		// If the path entered is a regex, evaluate
 		if(typeof(url1.test) === "function")
 			return url1.test(currentUrl);
 
 		// If its a string, see if its equal
-		if(typeof(url1) === "string")
+		if(typeof(url1) === "string") {
+
+			// If the route is case insensitive
+			if(isCaseInsensitive)
+				return (url1.toLowerCase() === currentUrl.toLowerCase());
+
 			return (url1 === currentUrl);
+		}
 
 		return false;
 	}
@@ -41,7 +46,7 @@ export default class _HnRouteHistoryAPI {
 				continue;
 
 			// Check if route matches and return it
-			if(this._isAMatch(routes[i].path, currentUrl))
+			if(this._isAMatch(routes[i].path, currentUrl, routes[i].caseInsensitive))
 				return routes[i];
 		}
 

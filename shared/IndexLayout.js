@@ -11,8 +11,8 @@ export default class IndexLayout extends React.Component  {
 	render() {
 
 		return (
-			<DefaultLayout>
-				<div id='userId'>
+			<DefaultLayout title='New App Thingy'>
+				<div id='awesomeApp'>
 					{getRoutes(this.props.req)}
 				</div>
 			</DefaultLayout>

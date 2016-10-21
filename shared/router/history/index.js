@@ -3,7 +3,6 @@ import _HnRouteHistoryAPI from './_HnRouteHistoryAPI';
 import * as events from '../history/events';
 
 
-
 /**
  * Helper class to be passed into the HnRouter component for 
  * routing in NodeJS

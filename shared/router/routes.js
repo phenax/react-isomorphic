@@ -1,40 +1,19 @@
 import React from 'react';
 
-import { Route, HnRouter, Link } from './HnRouter';
+import { Route, HnRouter } from './HnRouter';
 
-class Hello extends React.Component {
-
-	render() {
-
-		return (
-			<div>
-				<h1>Awesomeness</h1>
-				<Link to='/wow'>{'Click for wow'}</Link>
-			</div>
-		);
-	}
-}
-
-class WowPage extends React.Component {
-	render() { return <div>{'Such Awesome. Much Wow.'}</div>; }
-}
-
-class ErrorPage extends React.Component {
-
-	render() {
-
-		return <div>{'Error 404. Run for your lives'}</div>;
-	}
-}
-
+// Allpages
+import HomePage, { WowPage, RegexPage, CaseInsPage } from '../pages/HomePage';
+import Error404Page from '../pages/Error404Page';
 
 export default (history)=> (
 	<HnRouter history={history}>
 
-		<Route path='/' component={Hello} />
-		<Route path='/wow' component={WowPage} />
-		<Route path={/^\/awesome$/} component={Hello} />
+		<Route path='/'             component={HomePage} />
+		<Route path='/wow'          component={WowPage} />
+		<Route path={/^\/awesome/}  component={RegexPage} />
+		<Route path='/helloworld'   component={CaseInsPage} caseInsensitive={true} />
 
-		<Route errorHandler={true} statusCode={404} component={ErrorPage} />
+		<Route errorHandler={true} statusCode={404} component={Error404Page} />
 	</HnRouter>
 );

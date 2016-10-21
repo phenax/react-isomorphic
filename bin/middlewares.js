@@ -1,9 +1,9 @@
 
 const expressReactViews= require('express-react-views');
 
-module.exports= (app)=> ({
+module.exports= (app) => ({
 
-	init: (config)=> {
+	engineSetup: (config)=> {
 
 		app.set('views', config.path);
 		app.engine(config.extension, expressReactViews.createEngine(config.viewEngine));
