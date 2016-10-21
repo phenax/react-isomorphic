@@ -1,5 +1,5 @@
 
-import { HashHistoryAPI } from './HnRouter';
+import { HistoryAPI } from './HnRouter';
 
 import getRoutes from './routes';
 
@@ -7,4 +7,4 @@ const config= {
 
 };
 
-export default () => getRoutes(new HashHistoryAPI(config));
+export default () => getRoutes(new HistoryAPI(config));

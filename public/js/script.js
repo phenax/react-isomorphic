@@ -7075,6 +7075,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 // Error components
+var DEFAULTERROR = "Something went wrong";
 var NULLCOMPONENTERROR = 'The component cannot be null';
 var HISTORYTYPEERROR = 'The prop `history` has to be an instance of either HistoryAPI or NodeHistoryAPI';
 
@@ -7113,7 +7114,7 @@ var HnRouter = function (_React$Component2) {
 		};
 
 		_this2._routes = _this2.props.children.filter(function (comp) {
-			return !(comp instanceof Route);
+			return comp.type === __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(Route, null).type;
 		}).map(function (val) {
 			return val.props;
 		});
@@ -7138,13 +7139,19 @@ var HnRouter = function (_React$Component2) {
 	};
 
 	HnRouter.prototype.render = function render() {
-		var _props$history$matchR = this.props.history.matchRoute(this._routes);
 
-		var url = _props$history$matchR.url;
-		var $component = _props$history$matchR.$component;
+		var route = this.props.history.matchRoute(this._routes);
+
+		if (!route) {
+			throw new Error(DEFAULTERROR);
+		}
+
+		var $component = route.$component;
 
 
-		if ($component === null) throw new Error(NULLCOMPONENTERROR);
+		if (!$component) {
+			throw new Error(NULLCOMPONENTERROR);
+		}
 
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.cloneElement($component, { url: this.state.currentUrl });
 	};
@@ -7186,35 +7193,41 @@ var _HnRouteHistoryAPI = function () {
 		return false;
 	};
 
-	_HnRouteHistoryAPI.prototype._matchRoute = function _matchRoute(routes, currentUrl) {
+	_HnRouteHistoryAPI.prototype._findMatchRoute = function _findMatchRoute(routes, currentUrl) {
 
-		var $renderComponent = null;
-		var $errorHandler = null;
-		var $component = null;
+		var errorRoute = null;
 
 		for (var i = 0; i < routes.length; i++) {
 
-			$component = this._getComponentFromClass(routes[i].component, routes[i].props);
+			// console.log(routes[i]);
 
 			// If its an error handler
 			if (routes[i].errorHandler) {
-				$errorHandler = $component;
+				errorRoute = routes[i];
 				continue;
 			}
 
 			// If the path prop is not set
 			if (!('path' in routes[i])) continue;
 
-			// Check if route matches, return the component
-			if (this._isAMatch(routes[i].path, currentUrl)) {
-				$renderComponent = $component;
-				break;
-			}
+			// Check if route matches and return it
+			if (this._isAMatch(routes[i].path, currentUrl)) return routes[i];
 		}
+
+		return errorRoute;
+	};
+
+	_HnRouteHistoryAPI.prototype._matchRoute = function _matchRoute(routes, currentUrl) {
+
+		var $renderComponent = void 0;
+
+		var route = this._findMatchRoute(routes, currentUrl);
+
+		if (!route) $renderComponent = null;else $renderComponent = this._getComponentFromClass(route.component, route.props);
 
 		return {
 			url: currentUrl,
-			$component: $renderComponent || $errorHandler
+			$component: $renderComponent
 		};
 	};
 
@@ -7277,7 +7290,9 @@ function addRouteChangeListener(id, callback) {
  * Remove an update handler
  */
 function removeRouteChangeListener(id) {
+
 	handlers[id] = null;
+
 	delete handlers[id];
 }
 
@@ -11258,7 +11273,7 @@ module.exports = setTextContent;
 var config = {};
 
 /* harmony default export */ exports["a"] = function () {
-  return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__routes__["a" /* default */])(new __WEBPACK_IMPORTED_MODULE_0__HnRouter__["d" /* HashHistoryAPI */](config));
+  return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__routes__["a" /* default */])(new __WEBPACK_IMPORTED_MODULE_0__HnRouter__["d" /* HistoryAPI */](config));
 };
 
 /***/ },
@@ -11367,8 +11382,8 @@ Link.propTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__HnRouteHistoryAPI__ = __webpack_require__(59);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__history_events__ = __webpack_require__(60);
 /* unused harmony export NodeHistoryAPI */
-/* unused harmony export HistoryAPI */
-/* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return HashHistoryAPI; });
+/* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return HistoryAPI; });
+/* unused harmony export HashHistoryAPI */
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -11401,7 +11416,16 @@ var NodeHistoryAPI = function (_HnRouteHistoryAPI2) {
 
 		this._currentUrl = this._req.url;
 
-		return this._matchRoute(routes, this._currentUrl);
+		var route = this._findMatchRoute(routes, this._currentUrl);
+
+		this._req.statusCode = route.statusCode || null;
+
+		return {
+
+			url: this._currentUrl,
+
+			$component: this._getComponentFromClass(route.component, route.props)
+		};
 	};
 
 	return NodeHistoryAPI;
@@ -11436,7 +11460,7 @@ var HistoryAPI = function (_HnRouteHistoryAPI3) {
 
 	HistoryAPI.prototype.routeChangeListener = function routeChangeListener(callback) {
 
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__history_events__["c" /* addRouteChangeListener */])(this._randomId, function (event) {
+		__WEBPACK_IMPORTED_MODULE_1__history_events__["c" /* addRouteChangeListener */](this._randomId, function (event) {
 			callback({
 				url: window.location.pathname
 			});
@@ -11444,7 +11468,7 @@ var HistoryAPI = function (_HnRouteHistoryAPI3) {
 	};
 
 	HistoryAPI.prototype.removeChangeListener = function removeChangeListener() {
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__history_events__["d" /* removeRouteChangeListener */])(this._randomId);
+		__WEBPACK_IMPORTED_MODULE_1__history_events__["d" /* removeRouteChangeListener */](this._randomId);
 		window.removeEventListener('popstate', __WEBPACK_IMPORTED_MODULE_1__history_events__["b" /* triggerUpdate */]);
 	};
 
@@ -11525,6 +11549,7 @@ var Hello = function (_React$Component) {
 	}
 
 	Hello.prototype.render = function render() {
+
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			'div',
 			null,
@@ -11574,6 +11599,7 @@ var ErrorPage = function (_React$Component3) {
 	}
 
 	ErrorPage.prototype.render = function render() {
+
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			'div',
 			null,
@@ -11591,8 +11617,7 @@ var ErrorPage = function (_React$Component3) {
 		__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__HnRouter__["c" /* Route */], { path: '/', component: Hello }),
 		__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__HnRouter__["c" /* Route */], { path: '/wow', component: WowPage }),
 		__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__HnRouter__["c" /* Route */], { path: /^\/awesome$/, component: Hello }),
-		__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('div', { className: 'awesome' }),
-		__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__HnRouter__["c" /* Route */], { errorHandler: true, component: ErrorPage })
+		__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__HnRouter__["c" /* Route */], { errorHandler: true, statusCode: 404, component: ErrorPage })
 	);
 };
 

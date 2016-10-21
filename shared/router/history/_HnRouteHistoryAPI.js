@@ -21,23 +21,18 @@ export default class _HnRouteHistoryAPI {
 	}
 
 
-	_matchRoute(routes, currentUrl) {
 
-		let $renderComponent= null;
-		let $errorHandler= null;
-		let $component= null;
+	_findMatchRoute(routes, currentUrl) {
+
+		let errorRoute= null;
 
 		for(let i= 0; i< routes.length; i++) {
 
-			$component= 
-				this._getComponentFromClass(
-					routes[i].component, 
-					routes[i].props
-				);
+			// console.log(routes[i]);
 
 			// If its an error handler
 			if(routes[i].errorHandler) {
-				$errorHandler= $component;
+				errorRoute= routes[i];
 				continue;
 			}
 
@@ -45,16 +40,32 @@ export default class _HnRouteHistoryAPI {
 			if(!('path' in routes[i]))
 				continue;
 
-			// Check if route matches, return the component
-			if(this._isAMatch(routes[i].path, currentUrl)) {
-				$renderComponent= $component;
-				break;
-			}
+			// Check if route matches and return it
+			if(this._isAMatch(routes[i].path, currentUrl))
+				return routes[i];
 		}
+
+		return errorRoute;
+	}
+
+
+	_matchRoute(routes, currentUrl) {
+
+		let $renderComponent;
+
+		const route= this._findMatchRoute(routes, currentUrl);
+
+		if(!route)
+			$renderComponent= null;
+		else
+			$renderComponent= this._getComponentFromClass(
+				route.component, 
+				route.props
+			);
 
 		return {
 			url: currentUrl,
-			$component: $renderComponent || $errorHandler
+			$component: $renderComponent
 		};
 	}
 

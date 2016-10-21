@@ -7,6 +7,7 @@ export * from './history';
 export * from './components';
 
 // Error components
+const DEFAULTERROR= "Something went wrong";
 const NULLCOMPONENTERROR= 'The component cannot be null';
 const HISTORYTYPEERROR= 'The prop `history` has to be an instance of either HistoryAPI or NodeHistoryAPI';
 
@@ -32,7 +33,7 @@ export class HnRouter extends React.Component {
 
 		this._routes= 
 			this.props.children
-				.filter( comp => !(comp instanceof Route) )
+				.filter( comp => (comp.type === (<Route />).type) )
 				.map( val => val.props );
 
 		if(!(this.props.history instanceof _HnRouteHistoryAPI))
@@ -56,10 +57,17 @@ export class HnRouter extends React.Component {
 
 	render() {
 
-		const {url, $component}= this.props.history.matchRoute(this._routes);
+		const route= this.props.history.matchRoute(this._routes);
+		
+		if(!route) {
+			throw new Error(DEFAULTERROR);
+		}
 
-		if($component === null)
+		const { $component }= route;
+
+		if(!$component) {
 			throw new Error(NULLCOMPONENTERROR);
+		}
 
 		return React.cloneElement(
 			$component, 

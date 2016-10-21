@@ -1,9 +1,14 @@
 {
-  "name": "hacker-news",
-  "version": "0.0.0",
-  "private": true,
+  "name": "dont_know_where_this_is_going",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "6.8.0",
+    "npm": "3.10.8"
+  },
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "nodemon app.js",
+    "start:prod": "NODE_ENV=production node app.js",
     "build:js:watch": "webpack --watch",
     "build:js": "webpack",
     "build:js:prod": "NODE_ENV=production webpack -p"
@@ -13,13 +18,13 @@
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "body-parser": "~1.13.2",
+    "compression": "^1.6.2",
     "cookie-parser": "~1.3.5",
-    "debug": "~2.2.0",
     "express": "~4.13.1",
     "express-react-views": "^0.10.2",
     "morgan": "~1.6.1",
-    "react": "^15.3.2",
-    "serve-favicon": "~2.3.0"
+    "nodemon": "^1.11.0",
+    "react": "^15.3.2"
   },
   "devDependencies": {
     "webpack": "^2.1.0-beta.25",
@@ -27,7 +32,6 @@
     "react-dom": "^15.3.2",
     "es6-promise": "^3.3.1",
     "whatwg-fetch": "^1.0.0",
-    "babel-loader": "^6.2.5",
     "concurrently": "^3.1.0"
   }
 }

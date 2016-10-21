@@ -1,17 +1,25 @@
 
 const express = require('express');
 const app = express();
-
-global.app= app;
+const path= require('path');
 
 // Configuration
 require('./bin/config')(express, app);
 
-app.get('*', (req, res)=> {
-	res.render('IndexLayout', { req });
+const middleware= require('./bin/middlewares')(app);
+
+middleware.init({
+	path: path.join(__dirname, './shared'),
+	extension: '.js'
 });
+
+app.use(middleware.rendering({
+	wrapper: 'IndexLayout'
+}));
 
 // Error handlers
 require('./bin/errors')(app);
 
-module.exports = app;
+app.listen(app.get('port'), ()=> {
+	console.log(`Listening to port ${app.get('port')}...`);
+});

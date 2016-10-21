@@ -1,11 +1,6 @@
 import _HnRouteHistoryAPI from './_HnRouteHistoryAPI';
 
-import {
-	routerConfig,
-	triggerUpdate,
-	addRouteChangeListener,
-	removeRouteChangeListener
-} from '../history/events';
+import * as events from '../history/events';
 
 
 
@@ -20,14 +15,26 @@ export class NodeHistoryAPI extends _HnRouteHistoryAPI {
 
 		this._req= req;
 
-		routerConfig.type= 'node';
+		events.routerConfig.type= 'node';
 	}
 
 	matchRoute(routes) {
 
 		this._currentUrl= this._req.url;
 
-		return this._matchRoute(routes, this._currentUrl);
+		const route= this._findMatchRoute(routes, this._currentUrl);
+
+		this._req.statusCode= route.statusCode || null;
+
+		return {
+
+			url: this._currentUrl,
+			
+			$component: this._getComponentFromClass(
+				route.component, 
+				route.props
+			)
+		};
 	}
 }
 
@@ -42,9 +49,9 @@ export class HistoryAPI extends _HnRouteHistoryAPI {
 
 		this._randomId= Math.floor(Math.random()*1000000).toString(16);
 
-		window.addEventListener('popstate', triggerUpdate);
+		window.addEventListener('popstate', events.triggerUpdate);
 
-		routerConfig.type= 'push';
+		events.routerConfig.type= 'push';
 	}
 
 	matchRoute(routes) {
@@ -56,7 +63,7 @@ export class HistoryAPI extends _HnRouteHistoryAPI {
 
 	routeChangeListener(callback) {
 
-		addRouteChangeListener(this._randomId, 
+		events.addRouteChangeListener(this._randomId, 
 			event => {
 				callback({
 					url: window.location.pathname
@@ -66,8 +73,8 @@ export class HistoryAPI extends _HnRouteHistoryAPI {
 	}
 
 	removeChangeListener() {
-		removeRouteChangeListener(this._randomId);
-		window.removeEventListener('popstate', triggerUpdate);
+		events.removeRouteChangeListener(this._randomId);
+		window.removeEventListener('popstate', events.triggerUpdate);
 	}
 }
 
@@ -85,7 +92,7 @@ export class HashHistoryAPI extends _HnRouteHistoryAPI {
 
 		this._config= config;
 
-		routerConfig.type= 'hash';
+		events.routerConfig.type= 'hash';
 	}
 
 	_parseHash(hash) {
@@ -107,11 +114,11 @@ export class HashHistoryAPI extends _HnRouteHistoryAPI {
 
 	routeChangeListener() {
 
-		window.addEventListener('hashchange', triggerUpdate);
+		window.addEventListener('hashchange', events.triggerUpdate);
 	}
 
 	removeChangeListener() {
 
-		window.removeEventListener('hashchange', triggerUpdate);
+		window.removeEventListener('hashchange', events.triggerUpdate);
 	}
 }

@@ -14,8 +14,8 @@ export default class _DefaultLayout extends React.Component {
 
 					{this.props.children}
 
-					<script src='/js/script.js' />
-					<link rel='/css/style.css' rel='stylesheet' />
+					<script async defer src='/js/script.js' />
+					<link href='/css/style.css' rel='stylesheet' />
 				</body>
 			</html>
 		);
