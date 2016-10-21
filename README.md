@@ -4,7 +4,7 @@ Isomorphic react + express app with server-side rendering and declarative isomor
 <br /><br /><br /><br /><br />
 
 
-## *Instructions*
+## Instructions
 
 #### Starting the server
 
