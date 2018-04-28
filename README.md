@@ -1,5 +1,7 @@
 Isomorphic React Boilerplate
 ============================
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/phenax/react-isomorphic.svg)](https://greenkeeper.io/)
 Isomorphic react + express app with server-side rendering and declarative isomorphic routing for both front-end and back-end.
 <br /><br /><br /><br /><br />
 
